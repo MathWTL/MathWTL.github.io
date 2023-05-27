@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project</title>
+    <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 20px;
+    }
+    
+    h1 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+    }
+    
+    button {
+      display: block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    button:hover {
+      background-color: #45a049;
+    }
+    
+    #output-text {
+      margin-top: 20px;
+    }
+    
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+    }
+    /* Novo estilo para o botão de cópia */
+    #copy-button {
+      display: block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #2196F3;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    #copy-button:hover {
+      background-color: #1976D2;
+    }
+  </style>
+</head>
+<body>
+    <h1>Criptografia de Texto</h1>
+
+  <label for="input-text">Texto:</label>
+  <textarea id="input-text" rows="4" cols="50"></textarea>
+
+  <label for="output-text">Resultado:</label>
+  <textarea id="output-text" rows="4" cols="50" readonly></textarea>
+
+  <button id="encrypt-button">Criptografar</button>
+  <button id="decrypt-button">Descriptografar</button>
+  
+  <button id="copy-button">Copiar para Área de Transferência</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Mapeamento das letras para suas versões criptografadas
+      const encryptionMap = {
+        'e': 'enter',
+        'i': 'imes',
+        'a': 'ai',
+        'o': 'ober',
+        'u': 'ufat'
+      };
+      
+      // Mapeamento das versões criptografadas para as letras originais
+      const decryptionMap = {};
+      Object.keys(encryptionMap).forEach(key => {
+        decryptionMap[encryptionMap[key]] = key;
+      });
+      
+      // Função para criptografar um texto
+      function encryptText(text) {
+        let encryptedText = '';
+        for (let i = 0; i < text.length; i++) {
+          const char = text[i];
+          if (encryptionMap.hasOwnProperty(char)) {
+            encryptedText += encryptionMap[char];
+          } else {
+            encryptedText += char;
+          }
+        }
+        return encryptedText;
+      }
+      
+      // Função para descriptografar um texto
+      function decryptText(text) {
+        let decryptedText = '';
+        let i = 0;
+        while (i < text.length) {
+          let found = false;
+          for (let j = text.length; j > i; j--) {
+            const substring = text.substring(i, j);
+            if (decryptionMap.hasOwnProperty(substring)) {
+              decryptedText += decryptionMap[substring];
+              i = j;
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            decryptedText += text[i];
+            i++;
+          }
+        }
+        return decryptedText;
+      }
+      
+      // Função de callback para o botão "Criptografar"
+      function handleEncrypt() {
+        const inputText = document.getElementById('input-text').value;
+        const encryptedText = encryptText(inputText);
+        document.getElementById('output-text').value = encryptedText;
+      }
+      
+      // Função de callback para o botão "Descriptografar"
+      function handleDecrypt() {
+        const inputText = document.getElementById('input-text').value;
+        const decryptedText = decryptText(inputText);
+        document.getElementById('output-text').value = decryptedText;
+      }
+      
+      // Associa as funções de callback aos botões
+      document.getElementById('encrypt-button').addEventListener('click', handleEncrypt);
+      document.getElementById('decrypt-button').addEventListener('click', handleDecrypt);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Função para copiar o texto para a área de transferência
+      function copyToClipboard(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
+
+      // Função de callback para o botão "Copiar para Área de Transferência"
+      function handleCopy() {
+        const outputText = document.getElementById('output-text').value;
+        copyToClipboard(outputText);
+      }
+
+      // Associa a função de callback ao botão de cópia
+      document.getElementById('copy-button').addEventListener('click', handleCopy);
+    });
+  </script>
+  <footer>
+    Desenvolvido por Matheus Toledo
+  </footer>
+</body>
+</html>
